@@ -28,7 +28,15 @@ const PlayerWrapper = styled.div`
   font-size: 32px;
 `;
 
-function Square({ onClick, value }) {
+type Value = "X" | "O";
+
+function Square({
+  onClick,
+  value
+}: {
+  onClick: () => void;
+  value: Value | null;
+}) {
   return (
     <SquareWrapper data-testid="square" onClick={onClick}>
       {value}
@@ -42,6 +50,12 @@ function Squares({
   onTurnFinish,
   values,
   setValues
+}: {
+  currentSymbol: Value;
+  isGameOver: boolean;
+  onTurnFinish: () => void;
+  values: Array<Value | null>;
+  setValues: (values: Array<Value | null>) => void;
 }) {
   return (
     <SquaresWrapper>
@@ -67,8 +81,18 @@ function Squares({
 }
 
 function App() {
-  const players = ["X", "O"];
-  const initialValues = [null, null, null, null, null, null, null, null, null];
+  const players: Array<Value> = ["X", "O"];
+  const initialValues: Array<Value | null> = [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ];
 
   const [currentPlayer, setCurrentPlayer] = useState(0);
   const [values, setValues] = useState(initialValues);
@@ -94,33 +118,31 @@ function App() {
   }
 
   return (
-    <>
-      <AppWrapper>
-        <Squares
-          currentSymbol={players[currentPlayer]}
-          onTurnFinish={onTurnFinish}
-          isGameOver={isGameOver}
-          values={values}
-          setValues={setValues}
-        />
-        <PlayerWrapper>
-          {isGameOver ? (
-            <>
-              {winner ? (
-                <>
-                  <div>{`Winner: ${winner}`}</div>
-                </>
-              ) : (
-                <div>Draw</div>
-              )}
-              <button onClick={resetGame}>New Game</button>
-            </>
-          ) : (
-            `${players[currentPlayer]}'s Turn`
-          )}
-        </PlayerWrapper>
-      </AppWrapper>
-    </>
+    <AppWrapper>
+      <Squares
+        currentSymbol={players[currentPlayer]}
+        onTurnFinish={onTurnFinish}
+        isGameOver={isGameOver}
+        values={values}
+        setValues={setValues}
+      />
+      <PlayerWrapper>
+        {isGameOver ? (
+          <>
+            {winner ? (
+              <>
+                <div>{`Winner: ${winner}`}</div>
+              </>
+            ) : (
+              <div>Draw</div>
+            )}
+            <button onClick={resetGame}>New Game</button>
+          </>
+        ) : (
+          `${players[currentPlayer]}'s Turn`
+        )}
+      </PlayerWrapper>
+    </AppWrapper>
   );
 }
 
